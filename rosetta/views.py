@@ -138,8 +138,10 @@ def home(request):
                 try:
                     rosetta_i18n_pofile.save()
                     po_filepath, ext = os.path.splitext(rosetta_i18n_fn)
-                    save_as_mo_filepath = po_filepath + '.mo'
-                    rosetta_i18n_pofile.save_as_mofile(save_as_mo_filepath)
+
+                    if rosetta_settings.ENABLE_MO_COMPILE:
+                        save_as_mo_filepath = po_filepath + '.mo'
+                        rosetta_i18n_pofile.save_as_mofile(save_as_mo_filepath)
 
                     post_save.send(sender=None, language_code=rosetta_i18n_lang_code, request=request)
                     # Try auto-reloading via the WSGI daemon mode reload mechanism
@@ -292,7 +294,7 @@ def list_languages(request):
             request.session['rosetta_i18n_catalog_filter'] = filter_
             return HttpResponseRedirect(reverse('rosetta-pick-file'))
 
-    rosetta_i18n_catalog_filter = request.session.get('rosetta_i18n_catalog_filter', 'project')
+    rosetta_i18n_catalog_filter = request.session.get('rosetta_i18n_catalog_filter', rosetta_settings.DEFAULT_FILTER)
 
     third_party_apps = rosetta_i18n_catalog_filter in ('all', 'third-party')
     django_apps = rosetta_i18n_catalog_filter in ('all', 'django')
