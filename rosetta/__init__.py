@@ -1,4 +1,4 @@
-VERSION = (0, 6, 7, 'custom', 1)
+VERSION = (0, 6, 7, 'custom', 2)
 
 def get_version(svn=False, limit=3):
     "Returns the version as a human-format string."
