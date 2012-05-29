@@ -47,13 +47,13 @@ UWSGI_AUTO_RELOAD = getattr(settings, 'ROSETTA_UWSGI_AUTO_RELOAD', False)
 EXCLUDED_APPLICATIONS = getattr(settings, 'ROSETTA_EXCLUDED_APPLICATIONS', ())
 
 # Enable scanning applications
-ENABLE_SCAN_APPLICATIONS = getattr(settings, 'ROSETTA_SCAN_APPLICATIONS', True)
+ENABLE_APPLICATIONS_SCAN = getattr(settings, 'ROSETTA_ENABLE_APPLICATIONS_SCAN', True)
 
 # Enable scanning project
-ENABLE_SCAN_PROJECT = getattr(settings, 'ROSETTA_SCAN_PROJECT', True)
+ENABLE_PROJECT_SCAN = getattr(settings, 'ROSETTA_ENABLE_PROJECT_SCAN', True)
 
 # Enable scanning django apps
-ENABLE_SCAN_DJANGO = getattr(settings, 'ROSETTA_SCAN_DJANGO', True)
+ENABLE_DJANGO_SCAN = getattr(settings, 'ROSETTA_ENABLE_DJANGO_SCAN', True)
 
 # MO compilation
 ENABLE_MO_COMPILE = getattr(settings, 'ROSETTA_ENABLE_MO_COMPILE', True)

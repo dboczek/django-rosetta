@@ -316,7 +316,11 @@ def list_languages(request):
         ADMIN_MEDIA_PREFIX = settings.STATIC_URL + 'admin/'
 
     version = rosetta.get_version(True)
-    return render_to_response('rosetta/languages.html', locals(), context_instance=RequestContext(request))
+    ctx = dict(locals())
+    ctx.update({
+        'rosetta_settings': rosetta_settings,
+        })
+    return render_to_response('rosetta/languages.html', ctx, context_instance=RequestContext(request))
 list_languages = never_cache(list_languages)
 list_languages = user_passes_test(lambda user: can_translate(user), settings.LOGIN_URL)(list_languages)
 

@@ -9,13 +9,13 @@
     <h1>&nbsp;</h1>
     <ul class="object-tools">
         <li class="nobubble">{% trans "Filter" %}:</li>
-        {% if rosetta_settings.ENABLE_SCAN_PROJECT %}
+        {% if rosetta_settings.ENABLE_PROJECT_SCAN %}
         <li{% ifequal rosetta_i18n_catalog_filter 'project' %} class="active"{% endifequal %}><a href="?filter=project">{% trans "Project" %}</a></li>
         {% endif %}
-        {% if rosetta_settings.ENABLE_SCAN_APPLICATIONS %}
+        {% if rosetta_settings.ENABLE_APPLICATIONS_SCAN %}
         <li{% ifequal rosetta_i18n_catalog_filter 'third-party' %} class="active"{% endifequal %}><a href="?filter=third-party">{% trans "Third party" %}</a></li>
         {% endif %}
-        {% if rosetta_settings.ENABLE_SCAN_DJANGO %}
+        {% if rosetta_settings.ENABLE_DJANGO_SCAN %}
         <li{% ifequal rosetta_i18n_catalog_filter 'django' %} class="active"{% endifequal %}><a href="?filter=django">Django</a></li>
         {% endif %}
         <li{% ifequal rosetta_i18n_catalog_filter 'all' %} class="active"{% endifequal %}><a href="?filter=all">{% trans "All" %}</a></li>

@@ -20,7 +20,7 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
     paths = []
 
     # project/locale
-    if rosetta_settings.ENABLE_SCAN_PROJECT:
+    if rosetta_settings.ENABLE_PROJECT_SCAN:
         parts = settings.SETTINGS_MODULE.split('.')
         project = __import__(parts[0], {}, {}, [])
         abs_project_path = os.path.normpath(os.path.abspath(os.path.dirname(project.__file__)))
@@ -28,7 +28,7 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
             paths.append(os.path.abspath(os.path.join(os.path.dirname(project.__file__), 'locale')))
 
     # django/locale
-    if rosetta_settings.ENABLE_SCAN_DJANGO:
+    if rosetta_settings.ENABLE_DJANGO_SCAN:
         if django_apps:
             django_paths = cache.get('rosetta_django_paths')
             if django_paths is None:
@@ -46,7 +46,7 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
             paths.append(localepath)
 
     # project/app/locale
-    if rosetta_settings.ENABLE_SCAN_APPLICATIONS:
+    if rosetta_settings.ENABLE_APPLICATIONS_SCAN:
         for appname in settings.INSTALLED_APPS:
             if rosetta_settings.EXCLUDED_APPLICATIONS and appname in rosetta_settings.EXCLUDED_APPLICATIONS:
                 continue
