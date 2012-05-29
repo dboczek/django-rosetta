@@ -46,5 +46,22 @@ UWSGI_AUTO_RELOAD = getattr(settings, 'ROSETTA_UWSGI_AUTO_RELOAD', False)
 # Exclude applications defined in this list from being translated
 EXCLUDED_APPLICATIONS = getattr(settings, 'ROSETTA_EXCLUDED_APPLICATIONS', ())
 
+# Enable scanning applications
+ENABLE_APPLICATIONS_SCAN = getattr(settings, 'ROSETTA_ENABLE_APPLICATIONS_SCAN', True)
+
+# Enable scanning project
+ENABLE_PROJECT_SCAN = getattr(settings, 'ROSETTA_ENABLE_PROJECT_SCAN', True)
+
+# Enable scanning django apps
+ENABLE_DJANGO_SCAN = getattr(settings, 'ROSETTA_ENABLE_DJANGO_SCAN', True)
+
+# MO compilation
+ENABLE_MO_COMPILE = getattr(settings, 'ROSETTA_ENABLE_MO_COMPILE', True)
+
 # Line length of the updated PO file
 POFILE_WRAP_WIDTH = getattr(settings, 'ROSETTA_POFILE_WRAP_WIDTH', 78)
+
+# Default filter catalog
+DEFAULT_FILTER = getattr(settings, 'ROSETTA_DEFAULT_FILTER', 'project')
+
+

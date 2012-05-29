@@ -20,59 +20,61 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
     paths = []
 
     # project/locale
-    parts = settings.SETTINGS_MODULE.split('.')
-    project = __import__(parts[0], {}, {}, [])
-    abs_project_path = os.path.normpath(os.path.abspath(os.path.dirname(project.__file__)))
-    if project_apps:
-        paths.append(os.path.abspath(os.path.join(os.path.dirname(project.__file__), 'locale')))
+    if rosetta_settings.ENABLE_PROJECT_SCAN:
+        parts = settings.SETTINGS_MODULE.split('.')
+        project = __import__(parts[0], {}, {}, [])
+        abs_project_path = os.path.normpath(os.path.abspath(os.path.dirname(project.__file__)))
+        if project_apps:
+            paths.append(os.path.abspath(os.path.join(os.path.dirname(project.__file__), 'locale')))
 
     # django/locale
-    if django_apps:
-        django_paths = cache.get('rosetta_django_paths')
-        if django_paths is None:
-            django_paths = []
-            for root, dirnames, filename in os.walk(os.path.abspath(os.path.dirname(django.__file__))):
-                if 'locale' in dirnames:
-                    django_paths.append(os.path.join(root, 'locale'))
-                    continue
-            cache.set('rosetta_django_paths', django_paths, 60 * 60)
-        paths = paths + django_paths
+    if rosetta_settings.ENABLE_DJANGO_SCAN:
+        if django_apps:
+            django_paths = cache.get('rosetta_django_paths')
+            if django_paths is None:
+                django_paths = []
+                for root, dirnames, filename in os.walk(os.path.abspath(os.path.dirname(django.__file__))):
+                    if 'locale' in dirnames:
+                        django_paths.append(os.path.join(root, 'locale'))
+                        continue
+                cache.set('rosetta_django_paths', django_paths, 60 * 60)
+            paths = paths + django_paths
+
     # settings
     for localepath in settings.LOCALE_PATHS:
         if os.path.isdir(localepath):
             paths.append(localepath)
 
     # project/app/locale
-    for appname in settings.INSTALLED_APPS:
-        if rosetta_settings.EXCLUDED_APPLICATIONS and appname in rosetta_settings.EXCLUDED_APPLICATIONS:
-            continue
-        p = appname.rfind('.')
-        if p >= 0:
-            app = getattr(__import__(appname[:p], {}, {}, [appname[p + 1:]]), appname[p + 1:])
-        else:
-            app = __import__(appname, {}, {}, [])
+    if rosetta_settings.ENABLE_APPLICATIONS_SCAN:
+        for appname in settings.INSTALLED_APPS:
+            if rosetta_settings.EXCLUDED_APPLICATIONS and appname in rosetta_settings.EXCLUDED_APPLICATIONS:
+                continue
+            p = appname.rfind('.')
+            if p >= 0:
+                app = getattr(__import__(appname[:p], {}, {}, [appname[p + 1:]]), appname[p + 1:])
+            else:
+                app = __import__(appname, {}, {}, [])
 
-        apppath = os.path.normpath(os.path.abspath(os.path.join(os.path.dirname(app.__file__), 'locale')))
-        
+            apppath = os.path.normpath(os.path.abspath(os.path.join(os.path.dirname(app.__file__), 'locale')))
+            
 
-        # django apps
-        if 'contrib' in apppath and 'django' in apppath and not django_apps:
-            continue
+            # django apps
+            if 'contrib' in apppath and 'django' in apppath and not django_apps:
+                continue
 
-        # third party external
-        if not third_party_apps and abs_project_path not in apppath:
-            continue
+            # third party external
+            if not third_party_apps and abs_project_path not in apppath:
+                continue
+                
+            # local apps
+            if not project_apps and abs_project_path in apppath:
+                continue
+                
             
-        # local apps
-        if not project_apps and abs_project_path in apppath:
-            continue
+            if os.path.isdir(apppath):
+                paths.append(apppath)
             
-        
-        if os.path.isdir(apppath):
-            paths.append(apppath)
-            
-            
-        
             
     ret = set()
     langs = (lang,)

@@ -138,8 +138,10 @@ def home(request):
                 try:
                     rosetta_i18n_pofile.save()
                     po_filepath, ext = os.path.splitext(rosetta_i18n_fn)
-                    save_as_mo_filepath = po_filepath + '.mo'
-                    rosetta_i18n_pofile.save_as_mofile(save_as_mo_filepath)
+
+                    if rosetta_settings.ENABLE_MO_COMPILE:
+                        save_as_mo_filepath = po_filepath + '.mo'
+                        rosetta_i18n_pofile.save_as_mofile(save_as_mo_filepath)
 
                     post_save.send(sender=None, language_code=rosetta_i18n_lang_code, request=request)
                     # Try auto-reloading via the WSGI daemon mode reload mechanism
@@ -292,7 +294,7 @@ def list_languages(request):
             request.session['rosetta_i18n_catalog_filter'] = filter_
             return HttpResponseRedirect(reverse('rosetta-pick-file'))
 
-    rosetta_i18n_catalog_filter = request.session.get('rosetta_i18n_catalog_filter', 'project')
+    rosetta_i18n_catalog_filter = request.session.get('rosetta_i18n_catalog_filter', rosetta_settings.DEFAULT_FILTER)
 
     third_party_apps = rosetta_i18n_catalog_filter in ('all', 'third-party')
     django_apps = rosetta_i18n_catalog_filter in ('all', 'django')
@@ -314,7 +316,11 @@ def list_languages(request):
         ADMIN_MEDIA_PREFIX = settings.STATIC_URL + 'admin/'
 
     version = rosetta.get_version(True)
-    return render_to_response('rosetta/languages.html', locals(), context_instance=RequestContext(request))
+    ctx = dict(locals())
+    ctx.update({
+        'rosetta_settings': rosetta_settings,
+        })
+    return render_to_response('rosetta/languages.html', ctx, context_instance=RequestContext(request))
 list_languages = never_cache(list_languages)
 list_languages = user_passes_test(lambda user: can_translate(user), settings.LOGIN_URL)(list_languages)
 
