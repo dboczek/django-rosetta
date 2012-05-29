@@ -26,6 +26,8 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
         abs_project_path = os.path.normpath(os.path.abspath(os.path.dirname(project.__file__)))
         if project_apps:
             paths.append(os.path.abspath(os.path.join(os.path.dirname(project.__file__), 'locale')))
+    else:
+        abs_project_path = None
 
     # django/locale
     if rosetta_settings.ENABLE_DJANGO_SCAN:
@@ -64,11 +66,11 @@ def find_pos(lang, project_apps=True, django_apps=False, third_party_apps=False)
                 continue
 
             # third party external
-            if not third_party_apps and abs_project_path not in apppath:
+            if not third_party_apps and (not abs_project_path or abs_project_path not in apppath):
                 continue
                 
             # local apps
-            if not project_apps and abs_project_path in apppath:
+            if not project_apps and abs_project_path and abs_project_path in apppath:
                 continue
                 
             
