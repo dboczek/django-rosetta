@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name='django-rosetta',
-    version=__import__('rosetta').get_version(limit=3),
+    version=__import__('rosetta').get_version(limit=5),
     description='A Django application that eases the translation of Django projects',
     author='Marco Bonetti',
     author_email='mbonetti@gmail.com',
